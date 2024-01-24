@@ -1,0 +1,17 @@
+#OK test run 
+
+import spidev
+
+def nanorecieve (): 
+    spi = spidev.SpiDev()
+    spi.open(bus,device) #specify bus and slave, talk to D about what to replace here 
+    spi.mode = 0b00 #check if this is correct number 
+
+    byte = spi.readbytes(1.625) #13 bits???
+    listOfValues = spi.writebytes(byte)
+
+
+    #this is transaction but confused on how to make it work
+    spi.xfer(listOfValues [, speed_hz, delay_usec, 4]) 
+
+
