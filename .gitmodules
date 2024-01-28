@@ -1,0 +1,3 @@
+[submodule "src/uav-mobfinder"]
+	path = src/uav-mobfinder
+	url = https://github.com/riverdale-soc/uav-mobfinder.git
