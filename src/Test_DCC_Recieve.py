@@ -89,5 +89,10 @@ class TestDCCReceiver(unittest.TestCase):
         except MOBParserException as e:
             self.assertEqual(str(e), "Invalid MOB Wake String Format", "Did not raise the correct MOBParserException")
 
+    def test_parser_random_string(self):
+        dut = DCCListener()
+        test_line = "RANDOM STRING"
+        self.assertEqual(dut.parse_line(test_line), False, "Did not parse random string")
+
 if __name__ == '__main__':
     unittest.main()
