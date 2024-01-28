@@ -6,4 +6,6 @@ UART port listener to receive incoming MOB (Man-Overboard) Packets from ESP32 Su
 
 ## Setup 
 ```
-git clone 
+git clone https://github.com/riverdale-soc/nanorecieve.git
+```
+
