@@ -49,7 +49,6 @@ class DCCListener:
             if self.parse_line(line) is True:
                 # Implement wake up logic here
                 print("MOB Wake String Received")
-            print(line)
 
     # Parse line for MOB Wake String
     # We will assume it will come in a single line like: 
@@ -65,11 +64,11 @@ class DCCListener:
          remove any whitespaces from strings
         """
         line_list = [x.strip() for x in line.split(',')]
-        if len(line_list) != 5:
-            raise MOBParserException("Invalid MOB Wake String Format")
         # Check if first string is MOB
         if line_list[0] != "MOB":
             return False
+        if len(line_list) != 5:
+            raise MOBParserException("Invalid MOB Wake String Format")
         
         # Check if second string is valid MOB State
         if line_list[1] == "WAKE":
@@ -101,10 +100,16 @@ class DCCListener:
         self.mob_wake_dict['Latitude'] = line_list[4]
         return True
  
+    # print MOB Wake Dict by iterating through keys and values
+    def print_mob_wake_dict(self):
+        for key, value in self.mob_wake_dict.items():
+            print(key, value)
+
     def close_port(self) -> bool:
         self.port.close()
         return 0
 
 if __name__ == '__main__':
     dcclisten = DCCListener()
+    dcclisten.init_port()
     dcclisten.listen()
