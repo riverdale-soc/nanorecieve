@@ -8,14 +8,30 @@ import serial
 import time
 import enum
 
+# Define exceptions for MOB Parser, Invalid state, invalid format, etc.
+class MOBParserException(Exception):
+    pass
+
+
 # Enum of valid MOB States
 class MOB_STATE(enum.Enum):
-    MOB_WAKE = "OK"
+    MOB_WAKE = "WAKE"
     MOB_RESET = "RESET"
     MOB_NONE = "NONE"
 
 class DCCListener:
     def __init__(self):
+
+        self.mob_wake_dict = {
+            'MOB_STATE' : MOB_STATE.MOB_NONE, 
+            'Altitude' : "",
+            'Longitude' : "",
+            'Latitude' : "",
+        }
+
+        self.mob_time = None
+
+    def init_port(self) -> bool:
         """
           Open Serial Port to ESP32. 
           UART Configs: 115200 Baud, 8N1, XON/XOFF, PARITY NONE, RTS/CTS, 
@@ -24,14 +40,6 @@ class DCCListener:
         if self.port.is_open is not True:
             self.port.open()
 
-        self.mob_wake_dict = {
-            MOB_STATE : MOB_NONE, 
-            Altitude : "",
-            Longitude : "",
-            Latitude : "",
-        }
-
-        self.mob_time = None
 
     # Read all lines from serial port, and parse for MOB Wake String
     def listen(self):
@@ -50,6 +58,7 @@ class DCCListener:
         # Read line from serial port
         # Parse line for MOB Wake String, if true, update MOB Wake Dict
         # if it is not a MOB Wake String, return false
+        # if the state is invalid, raise exception
 
 
         # Store timestamp of MOB Wake String found 
@@ -62,4 +71,4 @@ class DCCListener:
 
 if __name__ == '__main__':
     dcclisten = DCCListener()
-    dcclisten.listen()
+    #dcclisten.listen()
