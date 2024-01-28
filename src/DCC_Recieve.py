@@ -4,9 +4,10 @@ ESP32 Submersion Handler UART Listener
 Opens USB-Serial Port and waits for Wake String, then constructs MOB Wake Dict
 """
 
-import serial
+#import serial
 import time
 import enum
+import re
 
 # Define exceptions for MOB Parser, Invalid state, invalid format, etc.
 class MOBParserException(Exception):
@@ -53,17 +54,52 @@ class DCCListener:
     # Parse line for MOB Wake String
     # We will assume it will come in a single line like: 
     # MOB indicates MOB Wake String, MOB State, Altitude, Longitude, Latitude
-    #        "MOB: OK, 12345.12345, 12345.12345, 12345.12345"
+    #        "MOB, OK, 12345.12345, 12345.12345, 12345.12345"
     def parse_line(self, line: str) -> bool:
-        # Read line from serial port
-        # Parse line for MOB Wake String, if true, update MOB Wake Dict
-        # if it is not a MOB Wake String, return false
-        # if the state is invalid, raise exception
+        """
+         Read line from serial port
+         Parse line for MOB Wake String, if true, update MOB Wake Dict
+         if it is not a MOB Wake String, return false
+         if the state is invalid, raise exception
+         Split line into list of strings, serperated by commas
+         remove any whitespaces from strings
+        """
+        line_list = [x.strip() for x in line.split(',')]
+        if len(line_list) != 5:
+            raise MOBParserException("Invalid MOB Wake String Format")
+        # Check if first string is MOB
+        if line_list[0] != "MOB":
+            return False
+        
+        # Check if second string is valid MOB State
+        if line_list[1] == "WAKE":
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_WAKE
+        elif line_list[1] == "RESET":
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_RESET
+        else:
+            raise MOBParserException("Invalid MOB State")
+        
+        # Check if Altitude is valid float
+        try:
+            float(line_list[2])
+        except ValueError:
+            raise MOBParserException("Invalid Altitude")
+        self.mob_wake_dict['Altitude'] = line_list[2]
 
+        # Check if Longitude is valid float
+        try:
+            float(line_list[3])
+        except ValueError:
+            raise MOBParserException("Invalid Longitude")
+        self.mob_wake_dict['Longitude'] = line_list[3]
 
-        # Store timestamp of MOB Wake String found 
-        self.mob_time = time.time()
-        return False
+        # Check if Latitude is valid float
+        try:
+            float(line_list[4])
+        except ValueError:
+            raise MOBParserException("Invalid Latitude")
+        self.mob_wake_dict['Latitude'] = line_list[4]
+        return True
  
     def close_port(self) -> bool:
         self.port.close()
@@ -71,4 +107,4 @@ class DCCListener:
 
 if __name__ == '__main__':
     dcclisten = DCCListener()
-    #dcclisten.listen()
+    dcclisten.listen()
