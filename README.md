@@ -25,3 +25,8 @@ Should appear as '/dev/ttyUSB0'
 ```
 sudo python3 src/DCC_Receive.py
 ```
+
+## Testing
+```
+python3 src/Test_DCC_Receive.py
+```
