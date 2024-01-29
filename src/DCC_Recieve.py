@@ -7,7 +7,6 @@ Opens USB-Serial Port and waits for Wake String, then constructs MOB Wake Dict
 #import serial
 import time
 import enum
-import re
 
 # Define exceptions for MOB Parser, Invalid state, invalid format, etc.
 class MOBParserException(Exception):
@@ -98,10 +97,14 @@ class DCCListener:
         except ValueError:
             raise MOBParserException("Invalid Latitude")
         self.mob_wake_dict['Latitude'] = mob_pattern[4]
+
+        self.mob_time = time.time()
+
         return True
  
     # print MOB Wake Dict by iterating through keys and values
     def print_mob_wake_dict(self):
+        print("MOB String Received at: ", self.mob_time)
         for key, value in self.mob_wake_dict.items():
             print(key, value)
 
