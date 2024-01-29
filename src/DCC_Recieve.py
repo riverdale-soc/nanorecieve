@@ -83,21 +83,21 @@ class DCCListener:
             float(mob_pattern[2])
         except ValueError:
             raise MOBParserException("Invalid Altitude")
-        self.mob_wake_dict['Altitude'] = line_list[2]
+        self.mob_wake_dict['Altitude'] = mob_pattern[2]
 
         # Check if Longitude is valid float
         try:
             float(mob_pattern[3])
         except ValueError:
             raise MOBParserException("Invalid Longitude")
-        self.mob_wake_dict['Longitude'] = line_list[3]
+        self.mob_wake_dict['Longitude'] = mob_pattern[3]
 
         # Check if Latitude is valid float
         try:
             float(mob_pattern[4])
         except ValueError:
             raise MOBParserException("Invalid Latitude")
-        self.mob_wake_dict['Latitude'] = line_list[4]
+        self.mob_wake_dict['Latitude'] = mob_pattern[4]
         return True
  
     # print MOB Wake Dict by iterating through keys and values
