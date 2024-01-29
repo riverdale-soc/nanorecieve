@@ -63,38 +63,38 @@ class DCCListener:
          Split line into list of strings, serperated by commas
          remove any whitespaces from strings
         """
-        line_list = [x.strip() for x in line.split(',')]
+        mob_pattern = [x.strip() for x in line.split(',')]
         # Check if first string is MOB
-        if line_list[0] != "MOB":
+        if mob_pattern[0] != "MOB":
             return False
-        if len(line_list) != 5:
+        if len(mob_pattern) != 5:
             raise MOBParserException("Invalid MOB Wake String Format")
         
         # Check if second string is valid MOB State
-        if line_list[1] == "WAKE":
+        if mob_pattern[1] == "WAKE":
             self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_WAKE
-        elif line_list[1] == "RESET":
+        elif mob_pattern[1] == "RESET":
             self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_RESET
         else:
             raise MOBParserException("Invalid MOB State")
         
         # Check if Altitude is valid float
         try:
-            float(line_list[2])
+            float(mob_pattern[2])
         except ValueError:
             raise MOBParserException("Invalid Altitude")
         self.mob_wake_dict['Altitude'] = line_list[2]
 
         # Check if Longitude is valid float
         try:
-            float(line_list[3])
+            float(mob_pattern[3])
         except ValueError:
             raise MOBParserException("Invalid Longitude")
         self.mob_wake_dict['Longitude'] = line_list[3]
 
         # Check if Latitude is valid float
         try:
-            float(line_list[4])
+            float(mob_pattern[4])
         except ValueError:
             raise MOBParserException("Invalid Latitude")
         self.mob_wake_dict['Latitude'] = line_list[4]
