@@ -12,7 +12,6 @@ import enum
 class MOBParserException(Exception):
     pass
 
-
 # Enum of valid MOB States
 class MOB_STATE(enum.Enum):
     MOB_WAKE = "WAKE"
@@ -21,6 +20,7 @@ class MOB_STATE(enum.Enum):
 
 class DCCListener:
     def __init__(self):
+        self.port = None
 
         self.mob_wake_dict = {
             'MOB_STATE' : MOB_STATE.MOB_NONE, 
@@ -29,7 +29,8 @@ class DCCListener:
             'Latitude' : "",
         }
 
-        self.mob_time = None
+        self.mob_time = None # Time stamp
+
 
     def init_port(self) -> bool:
         """
@@ -39,15 +40,18 @@ class DCCListener:
         self.port = serial.Serial('/dev/ttyUSB0', baudrate=115200, xonxoff=True)
         if self.port.is_open is not True:
             self.port.open()
-
+        return True
 
     # Read all lines from serial port, and parse for MOB Wake String
-    def listen(self):
+    def listen(self) -> None:
+        if self.port is None:
+            raise Exception("Serial Port is not initialized, init port first")
         while True:
             line = self.port.readline().decode('utf-8')
             if self.parse_line(line) is True:
                 # Implement wake up logic here
                 print("MOB Wake String Received")
+
 
     # Parse line for MOB Wake String
     # We will assume it will come in a single line like: 
@@ -99,7 +103,6 @@ class DCCListener:
         self.mob_wake_dict['Latitude'] = mob_pattern[4]
 
         self.mob_time = time.time()
-
         return True
  
     # print MOB Wake Dict by iterating through keys and values
@@ -109,15 +112,21 @@ class DCCListener:
             print(key, value)
 
     def write_serial(self, data: str) -> bool:
+        if self.port is None:
+            raise Exception("Serial Port is not initialized, init port first")
         # Convert to bytes
         data = data.encode('utf-8')
         self.port.write(data)
         return 0
 
     def close_port(self) -> bool:
+        if self.port is None:
+            raise Exception("Serial Port is not initialized, init port first")
         self.port.close()
         return 0
 
+# Main function to test DCCListener
+# Open Serial Port, listen for MOB Wake String, print MOB Wake Dict
 if __name__ == '__main__':
     dcclisten = DCCListener()
     dcclisten.init_port()
