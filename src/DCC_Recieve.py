@@ -105,6 +105,12 @@ class DCCListener:
         for key, value in self.mob_wake_dict.items():
             print(key, value)
 
+    def write_serial(self, data: str) -> bool:
+        # Convert to bytes
+        data = data.encode('utf-8')
+        self.port.write(data)
+        return 0
+
     def close_port(self) -> bool:
         self.port.close()
         return 0
