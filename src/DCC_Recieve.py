@@ -1,5 +1,3 @@
-
-
 """
 Author: Sophia Ventresca
 ESP32 Submersion Handler UART Listener
