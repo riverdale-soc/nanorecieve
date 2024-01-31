@@ -64,36 +64,33 @@ class DCCListener:
             raise MOBParserException("Invalid MOB Wake String Format")
 
     # Attempt to find the MOB state
-        if mob_pattern[1]  != 'WAKE':
-            if mob_pattern[1] == 'NONE':
-                pass
-            elif mob_pattern[1] == 'RESET':
-                pass
-            raise MOBParserException("Invalid MOB State")
+        if mob_pattern[1]  == 'WAKE':
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_WAKE
+        elif mob_pattern[1] == 'RESET':
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_RESET
+        elif mob_pattern[1] == 'NONE':
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_NONE
         else:
-            try:
-                self.mob_wake_dict['MOB_STATE'] = mob_pattern[1]
-            except KeyError:
-                raise MOBParserException("Invalid MOB State")
+            raise MOBParserException("Invalid MOB State")
 
     # Parse and validate altitude, longitude, and latitude
-            try:
-                altitude = float(mob_pattern[2])
-                self.mob_wake_dict["Altitude"] = mob_pattern[2]
-            except ValueError:
-                raise MOBParserException("Invalid Altitude")
+        try:
+            altitude = float(mob_pattern[2])
+            self.mob_wake_dict["Altitude"] = mob_pattern[2]
+        except ValueError:
+            raise MOBParserException("Invalid Altitude")
+        try:
+            longitude = float(mob_pattern[3])
+            self.mob_wake_dict["Longitude"] = mob_pattern[3]
+        except ValueError:
+            raise MOBParserException("Invalid Longitude")
+        try:
+            latitude = float(mob_pattern[4])
+            self.mob_wake_dict["Latitude"] = mob_pattern[4]
+        except ValueError:
+            raise MOBParserException("Invalid Latitude")
 
-            try:
-                longitude = float(mob_pattern[3])
-                self.mob_wake_dict["Longitude"] = mob_pattern[3]
-            except ValueError:
-                raise MOBParserException("Invalid Longitude")
 
-            try:
-                latitude = float(mob_pattern[4])
-                self.mob_wake_dict["Latitude"] = mob_pattern[4]
-            except ValueError:
-                raise MOBParserException("Invalid Latitude")
 
         self.mob_time = time.time()
         return True
