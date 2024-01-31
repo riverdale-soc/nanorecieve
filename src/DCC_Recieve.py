@@ -63,6 +63,19 @@ class DCCListener:
         if len(mob_pattern) != 5:
             raise MOBParserException("Invalid MOB Wake String Format")
 
+
+    # This seems to work, but it is hard to follow. (nested if-statements are hard to debug), probably why we are failing that one test.
+    #  Something like this may be easier to follow, and shoud do the same thing.
+
+    """  
+        if mob_pattern[1] == "WAKE":
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_WAKE
+        elif mob_pattern[1] == "RESET":
+            self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_RESET
+        elif ... for NONE case as well
+        else:
+            raise MOBParserException("Invalid MOB State")
+    """
     # Attempt to find the MOB state
         if mob_pattern[1]  != 'WAKE':
             if mob_pattern[1] == 'NONE':
@@ -75,7 +88,9 @@ class DCCListener:
                 self.mob_wake_dict['MOB_STATE'] = mob_pattern[1]
             except KeyError:
                 raise MOBParserException("Invalid MOB State")
-
+    # Correct, nice
+    # This will only execute when MOB state is wake, because it is indented.
+    # Pull all the checks below this comment back one comment (out of If-statement)
     # Parse and validate altitude, longitude, and latitude
             try:
                 altitude = float(mob_pattern[2])
