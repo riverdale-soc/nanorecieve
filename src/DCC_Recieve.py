@@ -1,3 +1,4 @@
+
 """
 Author: Sophia Ventresca
 ESP32 Submersion Handler UART Listener
@@ -55,20 +56,53 @@ class DCCListener:
     # MOB indicates MOB Wake String, MOB State, Altitude, Longitude, Latitude
     #        "MOB: OK, 12345.12345, 12345.12345, 12345.12345"
     def parse_line(self, line: str) -> bool:
-        # Read line from serial port
-        # Parse line for MOB Wake String, if true, update MOB Wake Dict
-        # if it is not a MOB Wake String, return false
-        # if the state is invalid, raise exception
+        mob_pattern = [x.strip() for x in line.split(', ')]
+        print(mob_pattern)
+        if mob_pattern[0] != "MOB":
+            return False
+        if len(mob_pattern) != 5:
+            raise MOBParserException("Invalid MOB Wake String Format")
 
+    # Attempt to find the MOB state
+        if mob_pattern[1]  != 'WAKE':
+            if mob_pattern[1] == 'NONE':
+                pass
+            elif mob_pattern[1] == 'RESET':
+                pass
+            raise MOBParserException("Invalid MOB State")
+        else:
+            try:
+                self.mob_wake_dict['MOB_STATE'] = mob_pattern[1]
+            except KeyError:
+                raise MOBParserException("Invalid MOB State")
 
-        # Store timestamp of MOB Wake String found 
+    # Parse and validate altitude, longitude, and latitude
+            try:
+                altitude = float(mob_pattern[2])
+                self.mob_wake_dict["Altitude"] = mob_pattern[2]
+            except ValueError:
+                raise MOBParserException("Invalid Altitude")
+
+            try:
+                longitude = float(mob_pattern[3])
+                self.mob_wake_dict["Longitude"] = mob_pattern[3]
+            except ValueError:
+                raise MOBParserException("Invalid Longitude")
+
+            try:
+                latitude = float(mob_pattern[4])
+                self.mob_wake_dict["Latitude"] = mob_pattern[4]
+            except ValueError:
+                raise MOBParserException("Invalid Latitude")
+
         self.mob_time = time.time()
-        return False
- 
+        return True
+
     def close_port(self) -> bool:
         self.port.close()
-        return 0
+        return
 
 if __name__ == '__main__':
     dcclisten = DCCListener()
-    #dcclisten.listen()
+    dcclisten.init_port()
+    dcclisten.listen()

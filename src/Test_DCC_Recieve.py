@@ -14,7 +14,6 @@ class TestDCCReceiver(unittest.TestCase):
         test_line = "MOB, WAKE, 12345.12345, 12345.12345, 12345.12345"
         self.assertEqual(dut.parse_line(test_line), True, "Did not parse valid MOB Wake String")
 
-
     def test_parser_valid_state(self):
         dut = DCCListener()
         test_line = "MOB, WAKE, 12345.12345, 12345.12345, 12345.12345"
