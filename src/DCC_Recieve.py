@@ -1,4 +1,5 @@
 
+
 """
 Author: Sophia Ventresca
 ESP32 Submersion Handler UART Listener
@@ -63,12 +64,12 @@ class DCCListener:
         if len(mob_pattern) != 5:
             raise MOBParserException("Invalid MOB Wake String Format")
 
-    # Attempt to find the MOB state
-        if mob_pattern[1]  == 'WAKE':
+        #Finding and storing MOB State
+        if mob_pattern[1] == "WAKE":
             self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_WAKE
-        elif mob_pattern[1] == 'RESET':
+        elif mob_pattern[1] == "RESET":
             self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_RESET
-        elif mob_pattern[1] == 'NONE':
+        elif mob_pattern[1] == "NONE":
             self.mob_wake_dict['MOB_STATE'] = MOB_STATE.MOB_NONE
         else:
             raise MOBParserException("Invalid MOB State")
