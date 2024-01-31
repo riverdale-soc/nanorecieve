@@ -91,8 +91,6 @@ class DCCListener:
         except ValueError:
             raise MOBParserException("Invalid Latitude")
 
-
-
         self.mob_time = time.time()
         return True
 
